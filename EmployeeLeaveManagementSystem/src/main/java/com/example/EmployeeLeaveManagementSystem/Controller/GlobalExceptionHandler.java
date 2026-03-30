@@ -63,5 +63,13 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(LeaveRequestNotFoundException.class)
+    public ResponseEntity<Map<String,Object>> handelLeaveRequestNotFoundException(LeaveRequestNotFoundException exception, WebRequest request){
+        return new ResponseEntity<>(
+                buildError(HttpStatus.BAD_REQUEST, exception.getMessage(), request),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
 
 }

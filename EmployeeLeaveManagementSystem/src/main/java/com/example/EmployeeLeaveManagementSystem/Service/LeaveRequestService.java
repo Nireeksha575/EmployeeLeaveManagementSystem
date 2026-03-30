@@ -1,5 +1,6 @@
 package com.example.EmployeeLeaveManagementSystem.Service;
 
+import com.example.EmployeeLeaveManagementSystem.DTO.ActionDTO;
 import com.example.EmployeeLeaveManagementSystem.DTO.LeaveRequestDTO;
 import com.example.EmployeeLeaveManagementSystem.DTO.LeaveResponseDTO;
 import com.example.EmployeeLeaveManagementSystem.Entity.Employee;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LeaveRequestService {
@@ -85,7 +87,49 @@ public class LeaveRequestService {
         return responseDTOS;
     }
 
+    public ResponseEntity<?> updateLeaveRequestStatus(ActionDTO actionDTO){
+        String email=actionDTO.getManagerEmail();
+        Optional<Employee> employee=employeeRepo.findByEmail(email);
+        if(employee.isPresent()){
+           return ResponseEntity.badRequest().body("Employee cannot update leave request status");
+        }
+        LeaveRequest leaveRequest=leaveRequestRepo.findById(actionDTO.getLeaveRequestId()).orElseThrow(
+                ()-> new LeaveRequestNotFoundException("LeaveRequest with id:"+actionDTO.getLeaveRequestId()+" not found")
+        );
+         if(actionDTO.getManagerEmail()==null){
+             return ResponseEntity.badRequest().body("Manager Email is required..");
+         }
+         leaveRequest.setManager(actionDTO.getManagerEmail());
+         if(actionDTO.getAction().equalsIgnoreCase("approved")){
+             leaveRequest.setStatus(LeaveStatus.APPROVED);
+         }
+         if(actionDTO.getAction().equalsIgnoreCase("rejected")){
+             leaveRequest.setStatus(LeaveStatus.REJECTED);
+         }
 
+         if(actionDTO.getRemarks()!=null){
+             leaveRequest.setRemarks(actionDTO.getRemarks());
+         }
+         return ResponseEntity.ok(leaveRequestRepo.save(leaveRequest));
+    }
+
+    public ResponseEntity<?> cancelLeaveRequest(String email,long leaveId){
+        Employee employee=employeeRepo.findByEmail(email).orElseThrow(
+                ()->new EmployeeNotFound("Employee with email:"+email+" not found")
+        );
+        LeaveRequest leaveRequest=leaveRequestRepo.findById(leaveId).orElseThrow(
+                ()->new LeaveRequestNotFoundException("Leave request with id:"+leaveId+" is not found")
+        );
+        if(employee.getEmployeeId()!=leaveRequest.getEmployee().getEmployeeId()){
+            return ResponseEntity.badRequest().body("You cannot cancel others Leave request..");
+        }
+        if(leaveRequest.getStartDate().isEqual(LocalDate.now())||leaveRequest.getStartDate().isBefore(LocalDate.now())){
+            return ResponseEntity.badRequest().body("You cannot cancel leave request after the leave has started");
+        }
+        leaveRequest.setStatus(LeaveStatus.CANCELLED);
+        leaveRequestRepo.save(leaveRequest);
+        return ResponseEntity.ok("Leave Request with id:"+ leaveId+" Successfully cancelled");
+    }
 
     private LeaveResponseDTO convertToDTO(LeaveRequest request){
         LeaveResponseDTO responseDTO=new LeaveResponseDTO();

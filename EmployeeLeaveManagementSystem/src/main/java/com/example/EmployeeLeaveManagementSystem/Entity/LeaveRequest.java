@@ -18,7 +18,7 @@ public class LeaveRequest {
     private String reason;
     @Enumerated(EnumType.STRING)
     private LeaveStatus status;
-    private String approvedBy;
+    private String Manager;
     private String remarks;
     @ManyToOne
     @JoinColumn(name = "employee_id")
@@ -64,12 +64,12 @@ public class LeaveRequest {
         this.status = status;
     }
 
-    public String getApprovedBy() {
-        return approvedBy;
+    public String getManager() {
+        return Manager;
     }
 
-    public void setApprovedBy(String approvedBy) {
-        this.approvedBy = approvedBy;
+    public void setManager(String manager) {
+        Manager = manager;
     }
 
     public String getRemarks() {

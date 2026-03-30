@@ -1,5 +1,6 @@
 package com.example.EmployeeLeaveManagementSystem.Controller;
 
+import com.example.EmployeeLeaveManagementSystem.DTO.ActionDTO;
 import com.example.EmployeeLeaveManagementSystem.DTO.LeaveRequestDTO;
 import com.example.EmployeeLeaveManagementSystem.DTO.LeaveResponseDTO;
 import com.example.EmployeeLeaveManagementSystem.Entity.LeaveRequest;
@@ -29,9 +30,14 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestService.getAllThePendingLeaveRequests());
     }
 
+    @PutMapping("/approval")
+    public ResponseEntity<?> updateLeaveRequestStatus(@RequestBody ActionDTO actionDTO){
+      return leaveRequestService.updateLeaveRequestStatus(actionDTO);
+    }
 
-
-
-
+    @PutMapping("/cancel/{leaveId}")
+    public ResponseEntity<?> cancelLeaveRequest(@RequestParam String email,@PathVariable long leaveId){
+      return leaveRequestService.cancelLeaveRequest(email, leaveId);
+    }
 
 }
