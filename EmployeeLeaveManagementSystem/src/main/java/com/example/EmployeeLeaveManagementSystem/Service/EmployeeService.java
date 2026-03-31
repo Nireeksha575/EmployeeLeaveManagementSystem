@@ -39,6 +39,7 @@ public class EmployeeService {
         } else {
             employee.setTimezone("UTC");
         }
+
         return employeeRepo.save(employee);
     }
 
@@ -46,6 +47,7 @@ public class EmployeeService {
         var updateEmployee = employeeRepo.findById(id).orElseThrow(
                 () -> new EmployeeNotFound("Employee with id:" + id + " not found")
         );
+
         if (employee.getName() != null)     updateEmployee.setName(employee.getName());
         if (employee.getEmail() != null)    updateEmployee.setEmail(employee.getEmail());
         if (employee.getDept() != null)     updateEmployee.setDept(employee.getDept());

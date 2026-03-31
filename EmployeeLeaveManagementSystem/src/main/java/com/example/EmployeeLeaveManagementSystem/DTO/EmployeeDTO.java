@@ -8,6 +8,14 @@ public class EmployeeDTO {
     private String dept;
     private String timezone;
 
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
     public String getName() {
         return name;
     }
@@ -32,11 +40,4 @@ public class EmployeeDTO {
         this.dept = dept;
     }
 
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
 }
