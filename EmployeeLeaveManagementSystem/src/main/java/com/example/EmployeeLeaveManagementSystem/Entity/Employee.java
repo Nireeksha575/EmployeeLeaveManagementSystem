@@ -5,6 +5,8 @@ import com.example.EmployeeLeaveManagementSystem.Enum.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Employee {
@@ -22,7 +24,8 @@ public class Employee {
     private LocalDate joined_at;
     @Enumerated(EnumType.STRING)
     private Role role;
-
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LeaveRequest> leaveRequests = new ArrayList<>();
     /** IANA timezone id, e.g. "Asia/Kolkata", "America/New_York". Defaults to UTC. */
     @Column(nullable = false)
     private String timezone = "UTC";
