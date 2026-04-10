@@ -93,7 +93,7 @@ public class LeaveRequestService {
                 id,
                 requestDTO.getStartDate(),
                 requestDTO.getEndDate(),
-                LeaveStatus.PENDING
+                LeaveStatus.PENDING.name()
         );
         if(duplicateCount>0){
             throw new DuplicateRequestException("Duplicate leave request");

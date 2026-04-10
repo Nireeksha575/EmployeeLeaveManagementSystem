@@ -24,8 +24,6 @@ public class Employee {
     private LocalDate joined_at;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LeaveRequest> leaveRequests = new ArrayList<>();
     /** IANA timezone id, e.g. "Asia/Kolkata", "America/New_York". Defaults to UTC. */
     @Column(nullable = false)
     private String timezone = "UTC";

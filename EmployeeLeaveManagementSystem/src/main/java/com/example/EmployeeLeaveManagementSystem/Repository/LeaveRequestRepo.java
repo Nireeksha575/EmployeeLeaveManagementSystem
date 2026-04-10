@@ -27,11 +27,11 @@ public interface LeaveRequestRepo extends JpaRepository<LeaveRequest, Long> {
             "WHERE l.employee_id = :employeeId " +
             "AND l.start_date = :startDate " +
             "AND l.end_date = :endDate " +
-            "AND l.status IN ('PENDING', 'APPROVED')",nativeQuery = true)
+            "AND l.status=:status",nativeQuery = true)
     long checkDuplicate(@Param("employeeId") long employeeId,
                         @Param("startDate") LocalDate startDate,
                         @Param("endDate") LocalDate endDate,
-                        @Param("status") LeaveStatus status);
+                        @Param("status") String status);
 
     // Fix overlapping leave query (was commented in your code)
     @Query(value = "select COUNT(*) " +
