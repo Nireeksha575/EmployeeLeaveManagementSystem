@@ -3,10 +3,12 @@ package com.example.EmployeeLeaveManagementSystem.Service;
 import com.example.EmployeeLeaveManagementSystem.Controller.EmployeeController;
 import com.example.EmployeeLeaveManagementSystem.DTO.EmployeeDTO;
 import com.example.EmployeeLeaveManagementSystem.Entity.Employee;
+import com.example.EmployeeLeaveManagementSystem.Entity.LeaveRequest;
 import com.example.EmployeeLeaveManagementSystem.Enum.Role;
 import com.example.EmployeeLeaveManagementSystem.Enum.Status;
 import com.example.EmployeeLeaveManagementSystem.Exception.EmployeeNotFound;
 import com.example.EmployeeLeaveManagementSystem.Repository.EmployeeRepo;
+import com.example.EmployeeLeaveManagementSystem.Repository.LeaveRequestRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,13 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
-    private static final Logger log = LoggerFactory.getLogger(EmployeeController.class);
+    private static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
     private final EmployeeRepo employeeRepo;
+    private final LeaveRequestRepo leaveRequestRepo;
 
-    public EmployeeService(EmployeeRepo employeeRepo) {
+    public EmployeeService(EmployeeRepo employeeRepo,LeaveRequestRepo leaveRequestRepo) {
         this.employeeRepo = employeeRepo;
+        this.leaveRequestRepo=leaveRequestRepo;
     }
 
     public List<Employee> getAllEmployees() {
@@ -61,6 +65,10 @@ public class EmployeeService {
         var employee = employeeRepo.findById(id).orElseThrow(
                 () -> new EmployeeNotFound("Employee with id:" + id + " not found")
         );
+        List<LeaveRequest> leaveRequests=leaveRequestRepo.findByEmployeeOrderByStartDateDesc(employee);
+        for(LeaveRequest leaveRequest:leaveRequests){
+            leaveRequestRepo.delete(leaveRequest);
+        }
         employeeRepo.delete(employee);
     }
 
